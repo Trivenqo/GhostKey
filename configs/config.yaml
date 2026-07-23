@@ -1,0 +1,19 @@
+app:
+  name: "ghostkey"
+  env: "dev"
+  port: 8080
+
+log:
+  level: "debug"
+  format: "console" # use 'json' for prod
+
+database:
+  url: "postgres://postgres:postgres@localhost:5432/ghostkey?sslmode=disable"
+  max_conns: 20
+
+redis:
+  url: "redis://localhost:6379/0"
+
+kafka:
+  brokers:
+    - "localhost:9092"
