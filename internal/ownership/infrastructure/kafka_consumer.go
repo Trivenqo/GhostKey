@@ -2,20 +2,18 @@ package infrastructure
 
 import (
 	"context"
-
 	"encoding/json"
 	"log"
 	"regexp"
 	"strings"
 
-	"github.com/google/uuid"
 	"github.com/segmentio/kafka-go"
 
 	"github.com/Trivenqo/GhostKey/internal/ownership/application"
 )
 
 type DiscoveredIdentityEvent struct {
-	ID        uuid.UUID         `json:"id"`
+	ID        string            `json:"id"` // Changed to string
 	ARN       string            `json:"arn"`
 	AccountID string            `json:"account_id"`
 	Provider  string            `json:"provider"`
@@ -33,8 +31,8 @@ func NewKafkaConsumer(brokers []string, topic, groupID string, useCase *applicat
 		Brokers:  brokers,
 		Topic:    topic,
 		GroupID:  groupID,
-		MinBytes: 10e3, // 10KB
-		MaxBytes: 10e6, // 10MB
+		MinBytes: 10e3,
+		MaxBytes: 10e6,
 	})
 
 	return &KafkaConsumer{
@@ -88,7 +86,6 @@ func (c *KafkaConsumer) processEvent(ctx context.Context, event DiscoveredIdenti
 }
 
 func extractContext(event DiscoveredIdentityEvent) (ownerEmail, teamName, department string) {
-	// Rule 1: Extract from Metadata/Tags
 	for k, v := range event.Tags {
 		lowerK := strings.ToLower(k)
 		switch lowerK {
@@ -101,7 +98,6 @@ func extractContext(event DiscoveredIdentityEvent) (ownerEmail, teamName, depart
 		}
 	}
 
-	// Rule 2: ARN Heuristic (e.g. arn:aws:iam::123456789012:user/engineering/alice.dev)
 	if ownerEmail == "" {
 		re := regexp.MustCompile(`user/(?:([^/]+)/)?([^/]+)`)
 		matches := re.FindStringSubmatch(event.ARN)

@@ -15,7 +15,7 @@ const (
 
 type Ownership struct {
 	ID            uuid.UUID     `json:"id"`
-	IdentityID    uuid.UUID     `json:"identity_id"`
+	IdentityID    string        `json:"identity_id"` // Changed to string
 	OwnerEmail    string        `json:"owner_email,omitempty"`
 	TeamName      string        `json:"team_name,omitempty"`
 	Department    string        `json:"department,omitempty"`
@@ -25,7 +25,7 @@ type Ownership struct {
 }
 
 type IdentityOwnershipDTO struct {
-	IdentityID    uuid.UUID     `json:"identity_id"`
+	IdentityID    string        `json:"identity_id"` // Changed to string
 	ARN           string        `json:"arn"`
 	AccountID     string        `json:"account_id"`
 	Provider      string        `json:"provider"`

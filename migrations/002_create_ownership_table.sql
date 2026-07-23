@@ -1,10 +1,10 @@
 CREATE TABLE IF NOT EXISTS identity_ownership (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    identity_id UUID NOT NULL UNIQUE REFERENCES identities(id) ON DELETE CASCADE,
+    identity_id VARCHAR(255) NOT NULL UNIQUE REFERENCES identities(id) ON DELETE CASCADE,
     owner_email VARCHAR(255),
     team_name VARCHAR(255),
     department VARCHAR(255),
-    mapping_source VARCHAR(50) NOT NULL DEFAULT 'MANUAL', -- 'AUTO' or 'MANUAL'
+    mapping_source VARCHAR(50) NOT NULL DEFAULT 'MANUAL',
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

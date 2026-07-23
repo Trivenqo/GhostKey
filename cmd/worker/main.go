@@ -19,8 +19,9 @@ func main() {
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {
-		dbURL = "postgres://postgres:postgres@localhost:5432/ghostkey?sslmode=disable"
-	}
+    // Using 'postgres' instead of 'localhost'
+    dbURL = "postgres://postgres:postgres@postgres:5432/ghostkey?sslmode=disable"
+  }
 
 	pool, err := pgxpool.New(ctx, dbURL)
 	if err != nil {
@@ -30,8 +31,9 @@ func main() {
 
 	kafkaBrokers := []string{os.Getenv("KAFKA_BROKER")}
 	if len(kafkaBrokers) == 0 || kafkaBrokers[0] == "" {
-		kafkaBrokers = []string{"localhost:9092"}
-	}
+    // Using 'kafka' instead of 'localhost'
+    kafkaBrokers = []string{"kafka:9092"}
+    }
 
 	// Initialize Ownership Dependencies for Kafka Worker
 	ownershipRepo := ownershipInfra.NewPostgresOwnershipRepository(pool)

@@ -3,7 +3,6 @@ package infrastructure
 import (
 	"context"
 
-	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -39,7 +38,8 @@ func (r *PostgresOwnershipRepository) Upsert(ctx context.Context, o *domain.Owne
 	).Scan(&o.ID, &o.CreatedAt, &o.UpdatedAt)
 }
 
-func (r *PostgresOwnershipRepository) GetByIdentityID(ctx context.Context, identityID uuid.UUID) (*domain.Ownership, error) {
+// Updated identityID parameter from uuid.UUID to string
+func (r *PostgresOwnershipRepository) GetByIdentityID(ctx context.Context, identityID string) (*domain.Ownership, error) {
 	query := `
 		SELECT id, identity_id, COALESCE(owner_email, ''), COALESCE(team_name, ''), COALESCE(department, ''), mapping_source, created_at, updated_at
 		FROM identity_ownership
@@ -69,15 +69,11 @@ func (r *PostgresOwnershipRepository) ListWithIdentities(ctx context.Context) ([
 	query := `
 		SELECT 
 			i.id,
-			i.arn,
-			i.account_id,
-			i.provider,
-			i.type,
 			COALESCE(o.owner_email, ''),
 			COALESCE(o.team_name, ''),
 			COALESCE(o.department, ''),
 			COALESCE(o.mapping_source, ''),
-			(o.id IS NOT NULL) as is_mapped
+     		(o.id IS NOT NULL) as is_mapped
 		FROM identities i
 		LEFT JOIN identity_ownership o ON i.id = o.identity_id
 		ORDER BY i.created_at DESC
@@ -94,10 +90,6 @@ func (r *PostgresOwnershipRepository) ListWithIdentities(ctx context.Context) ([
 		var source string
 		if err := rows.Scan(
 			&dto.IdentityID,
-			&dto.ARN,
-			&dto.AccountID,
-			&dto.Provider,
-			&dto.Type,
 			&dto.OwnerEmail,
 			&dto.TeamName,
 			&dto.Department,

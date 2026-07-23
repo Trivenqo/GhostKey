@@ -2,7 +2,6 @@ package presentation
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 
 	"github.com/Trivenqo/GhostKey/internal/ownership/application"
 )
@@ -42,7 +41,7 @@ func (h *OwnershipHandler) AssignOwnership(c *fiber.Ctx) error {
 		})
 	}
 
-	if input.IdentityID == uuid.Nil {
+	if input.IdentityID == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "identity_id is required",
 		})
@@ -62,9 +61,8 @@ func (h *OwnershipHandler) AssignOwnership(c *fiber.Ctx) error {
 }
 
 func (h *OwnershipHandler) GetIdentityOwnership(c *fiber.Ctx) error {
-	idParam := c.Params("id")
-	identityID, err := uuid.Parse(idParam)
-	if err != nil {
+	identityID := c.Params("id")
+	if identityID == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "Invalid identity ID",
 		})

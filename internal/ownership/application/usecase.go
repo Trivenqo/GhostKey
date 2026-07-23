@@ -3,16 +3,14 @@ package application
 import (
 	"context"
 
-	"github.com/google/uuid"
-
 	"github.com/Trivenqo/GhostKey/internal/ownership/domain"
 )
 
 type AssignOwnershipInput struct {
-	IdentityID uuid.UUID `json:"identity_id"`
-	OwnerEmail string    `json:"owner_email"`
-	TeamName   string    `json:"team_name"`
-	Department string    `json:"department"`
+	IdentityID string `json:"identity_id"` // Changed to string
+	OwnerEmail string `json:"owner_email"`
+	TeamName   string `json:"team_name"`
+	Department string `json:"department"`
 }
 
 type OwnershipUseCase struct {
@@ -40,8 +38,7 @@ func (uc *OwnershipUseCase) AssignManualOwnership(ctx context.Context, input Ass
 	return ownership, nil
 }
 
-func (uc *OwnershipUseCase) AssignAutoOwnership(ctx context.Context, identityID uuid.UUID, ownerEmail, teamName, department string) error {
-	// Skip auto-assignment if already manually mapped
+func (uc *OwnershipUseCase) AssignAutoOwnership(ctx context.Context, identityID string, ownerEmail, teamName, department string) error {
 	existing, err := uc.repo.GetByIdentityID(ctx, identityID)
 	if err == nil && existing != nil && existing.MappingSource == domain.SourceManual {
 		return nil
@@ -58,7 +55,7 @@ func (uc *OwnershipUseCase) AssignAutoOwnership(ctx context.Context, identityID 
 	return uc.repo.Upsert(ctx, ownership)
 }
 
-func (uc *OwnershipUseCase) GetIdentityOwnership(ctx context.Context, identityID uuid.UUID) (*domain.Ownership, error) {
+func (uc *OwnershipUseCase) GetIdentityOwnership(ctx context.Context, identityID string) (*domain.Ownership, error) {
 	return uc.repo.GetByIdentityID(ctx, identityID)
 }
 
