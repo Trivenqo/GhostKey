@@ -5,29 +5,37 @@ import (
 	"log"
 	"os"
 
-	"github.com/Trivenqo/GhostKey/internal/bootstrap"
-	"github.com/Trivenqo/GhostKey/internal/interfaces/http"
-	"go.uber.org/zap"
+	"github.com/gofiber/fiber/v2"
+	"github.com/jackc/pgx/v5/pgxpool"
+
+	ownershipApp "ghostkey/internal/ownership/application"
+	ownershipInfra "ghostkey/internal/ownership/infrastructure"
+	ownershipPres "ghostkey/internal/ownership/presentation"
 )
 
 func main() {
-	ctx := context.Background()
-
-	// 1. Build Infrastructure Container
-	container, err := bootstrap.BuildContainer(ctx)
-	if err != nil {
-		log.Fatalf("Failed to initialize container: %v", err)
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		dbURL = "postgres://postgres:postgres@localhost:5432/ghostkey?sslmode=disable"
 	}
-	defer container.Close()
 
-	// 2. Build HTTP Router
-	router := http.NewRouter(container)
+	pool, err := pgxpool.New(context.Background(), dbURL)
+	if err != nil {
+		log.Fatalf("Unable to connect to database: %v\n", err)
+	}
+	defer pool.Close()
 
-	// 3. Assemble and Start App
-	app := bootstrap.NewApp(container, router)
-	
-	if err := app.Start(); err != nil {
-		container.Logger.Fatal("Application terminated", zap.Error(err))
-		os.Exit(1)
+	app := fiber.New()
+	v1 := app.Group("/v1")
+
+	// Ownership Module Initialization
+	ownershipRepo := ownershipInfra.NewPostgresOwnershipRepository(pool)
+	ownershipUseCase := ownershipApp.NewOwnershipUseCase(ownershipRepo)
+	ownershipHandler := ownershipPres.NewOwnershipHandler(ownershipUseCase)
+	ownershipHandler.RegisterRoutes(v1)
+
+	log.Println("API server listening on :8080")
+	if err := app.Listen(":8080"); err != nil {
+		log.Fatalf("Fiber error: %v", err)
 	}
 }
