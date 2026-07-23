@@ -3,13 +3,11 @@ package http
 import (
 	"strconv"
 
-	"github.com/gofiber/fiber/v2"
 	"github.com/Trivenqo/GhostKey/internal/discovery/application/usecase"
-	"github.com/Trivenqo/GhostKey/internal/shared/canonical"
+	"github.com/gofiber/fiber/v2"
 )
 
 // IdentityResponse is the DTO (Data Transfer Object) for the API.
-// It ensures we don't accidentally leak internal domain structures.
 type IdentityResponse struct {
 	ID          string            `json:"id"`
 	Provider    string            `json:"provider"`
@@ -31,7 +29,6 @@ func NewHandler(listUseCase *usecase.ListIdentitiesUseCase) *Handler {
 
 // ListIdentities handles GET /v1/identities
 func (h *Handler) ListIdentities(c *fiber.Ctx) error {
-	// 1. Parse Query Parameters
 	provider := c.Query("provider", "")
 	
 	limit, _ := strconv.Atoi(c.Query("limit", "50"))
@@ -43,13 +40,11 @@ func (h *Handler) ListIdentities(c *fiber.Ctx) error {
 		Offset:   offset,
 	}
 
-	// 2. Call the Application Layer (Business Logic)
 	identities, err := h.listUseCase.Execute(c.Context(), query)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 
-	// 3. Map Domain Entities to HTTP DTOs
 	var response []IdentityResponse
 	for _, id := range identities {
 		response = append(response, IdentityResponse{
@@ -62,7 +57,6 @@ func (h *Handler) ListIdentities(c *fiber.Ctx) error {
 		})
 	}
 
-	// Ensure we return an empty array [] instead of null if there are no results
 	if response == nil {
 		response = make([]IdentityResponse, 0)
 	}
