@@ -4,7 +4,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/Trivenqo/GhostKey/internal/bootstrap"
+	
 	"github.com/Trivenqo/GhostKey/internal/interfaces/http/health"
+	
+	// Import the discovery module
+	"github.com/Trivenqo/GhostKey/internal/discovery"
 )
 
 func NewRouter(container *bootstrap.Container) *fiber.App {
@@ -23,10 +27,13 @@ func NewRouter(container *bootstrap.Container) *fiber.App {
 
 	v1 := app.Group("/v1")
 
-	// Register Core Endpoints correctly on the v1 group!
+	// Core Endpoints
 	healthHandler := health.NewHandler(container)
 	v1.Get("/healthz", healthHandler.Healthz)
 	v1.Get("/readyz", healthHandler.Readyz)
 
+	// Register Modules!
+	discovery.Register(container, v1)
+
 	return app
-}
+} 

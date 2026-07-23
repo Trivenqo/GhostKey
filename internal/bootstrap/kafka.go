@@ -10,6 +10,7 @@ import (
 func NewKafkaClient(cfg KafkaConfig) (*kgo.Client, error) {
 	client, err := kgo.NewClient(
 		kgo.SeedBrokers(cfg.Brokers...),
+		kgo.AllowAutoTopicCreation(), // <-- THIS tells franz-go to auto-create topics!
 	)
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize kafka client: %w", err)
