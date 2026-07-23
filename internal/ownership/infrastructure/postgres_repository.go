@@ -7,7 +7,7 @@ import (
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"ghostkey/internal/ownership/domain"
+	"github.com/Trivenqo/GhostKey/internal/ownership/domain"
 )
 
 type PostgresOwnershipRepository struct {

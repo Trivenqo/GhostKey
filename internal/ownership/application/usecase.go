@@ -5,7 +5,7 @@ import (
 
 	"github.com/google/uuid"
 
-	"ghostkey/internal/ownership/domain"
+	"github.com/Trivenqo/GhostKey/internal/ownership/domain"
 )
 
 type AssignOwnershipInput struct {

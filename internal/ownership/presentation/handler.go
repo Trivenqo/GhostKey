@@ -4,7 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 
-	"ghostkey/internal/ownership/application"
+	"github.com/Trivenqo/GhostKey/internal/ownership/application"
 )
 
 type OwnershipHandler struct {

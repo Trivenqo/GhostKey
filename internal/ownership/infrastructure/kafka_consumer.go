@@ -11,8 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/segmentio/kafka-go"
 
-	"ghostkey/internal/ownership/application"
-	"ghostkey/internal/ownership/domain"
+	"github.com/Trivenqo/GhostKey/internal/ownership/application"
 )
 
 type DiscoveredIdentityEvent struct {
@@ -34,8 +33,8 @@ func NewKafkaConsumer(brokers []string, topic, groupID string, useCase *applicat
 		Brokers:  brokers,
 		Topic:    topic,
 		GroupID:  groupID,
-		MinBytes: 10KB,
-		MaxBytes: 10MB,
+		MinBytes: 10e3, // 10KB
+		MaxBytes: 10e6, // 10MB
 	})
 
 	return &KafkaConsumer{

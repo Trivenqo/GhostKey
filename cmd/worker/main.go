@@ -9,8 +9,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	ownershipApp "ghostkey/internal/ownership/application"
-	ownershipInfra "ghostkey/internal/ownership/infrastructure"
+	ownershipApp "github.com/Trivenqo/GhostKey/internal/ownership/application"
+	ownershipInfra "github.com/Trivenqo/GhostKey/internal/ownership/infrastructure"
 )
 
 func main() {

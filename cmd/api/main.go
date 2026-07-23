@@ -8,9 +8,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	ownershipApp "ghostkey/internal/ownership/application"
-	ownershipInfra "ghostkey/internal/ownership/infrastructure"
-	ownershipPres "ghostkey/internal/ownership/presentation"
+	ownershipApp "github.com/Trivenqo/GhostKey/internal/ownership/application"
+	ownershipInfra "github.com/Trivenqo/GhostKey/internal/ownership/infrastructure"
+	ownershipPres "github.com/Trivenqo/GhostKey/internal/ownership/presentation"
 )
 
 func main() {
